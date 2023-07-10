@@ -2,7 +2,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "core.cpp"
-#include "shop.cpp"
 
 #include <stdio.h>
 #include <string.h>
@@ -10,6 +9,9 @@
 
 int main() {
 	setlocale(LC_ALL, "Rus");
-	//mainMenu();
-	main_shop();
+	init_enemy_1();
+	mainMenu_N();
+	//main_shop();
+	//choise_attack();
+
 }

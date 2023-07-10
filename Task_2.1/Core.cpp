@@ -4,11 +4,14 @@
 #include "headers.h"
 #include "print_console.cpp"
 #include "profile_file.cpp"
+#include "enemy_class.cpp"
+#include "shop.cpp"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
+//#include <conio.h>
+//#include <Windows.h>
 
 
 #define KEY_UP 72
@@ -19,15 +22,15 @@
 
 static int count_dudes = 0;
 
-static struct dude* main_profile;
+static struct dude* main_profile; //Мейн чел
 
 void mainMenu_choose();
 void about_game();
 void play_game();
-void nameGame_screen();
-void playMenu_screen();
-void aboutGame_screen();
-void mainMenu_screen();
+//void nameGame_screen();
+//void playMenu_screen();
+//void aboutGame_screen();
+//void mainMenu_screen();
 void create_dude();
 void ultra_man(struct dude create_player);
 void ultra_ork(struct dude create_player);
@@ -35,11 +38,16 @@ void ultra_dvarf(struct dude create_player);
 void ultra_elf(struct dude create_player);
 void load_dude(struct dude* load_player, int count);
 void strat_game(struct dude* player);
+void playerDies(struct dude* player);
+void attackENEMY(struct dude* player, struct enemy* enemy);
+void choise_attack(struct dude* player, struct enemy* enemy);
+void attackPLAYER(struct dude* player, struct enemy* enemy);
 
 
 inline void mainMenu_choose() {
 	int selected = 0;
 	int keyPressed;
+	//Sleep(1000);
 
 	bool main = true;
 	while (main) {
@@ -82,7 +90,7 @@ inline void mainMenu_choose() {
 	}
 }
 
-inline void mainMenu() {
+inline void mainMenu_N() {
 	system("cls");
 	nameGame_screen();
 	mainMenu_screen();
@@ -95,7 +103,18 @@ inline void strat_game(struct dude* player) {
 	printf("%d %d %d %d\n", main_profile[0].dude_skills.dude_charisma, main_profile[0].dude_skills.dude_power, main_profile[0].dude_skills.dude_intelligence, main_profile[0].dude_skills.dude_close_combat);
 	printf("%s\n", (char*)main_profile[0].dude_name[1]);
 	printf("%s", main_profile[0].dude_ultra_abilities[1]);
+	//player->dude_weapon = sword[3];
+	struct shop* man = malloc(sizeof(struct shop));
+	*man = main_shop_(man);
+	main_profile->dude_weapon = man->shop_weapon;
+	main_profile->dude_shield = man->shop_shield;
+	main_profile->dude_armor = man->shop_armor;
 
+	//char str1[10] = "";
+	//strcpy(str1, player->dude_weapon.weapon_class[4]);
+	int distWeapon = main_profile->dude_weapon.distance;
+
+	choise_attack(main_profile, &enemy_1);
 	
 }
 
@@ -108,7 +127,7 @@ inline void about_game() {
 		switch (exitAbout_point)
 		{
 		default:
-			mainMenu();
+			mainMenu_N();
 			break;
 		}
 	} while (1);
@@ -157,7 +176,7 @@ inline void play_game() {
 				play = false;
 				break;
 			case 2:
-				mainMenu();
+				mainMenu_N();
 				play = false;
 				break;
 			}
@@ -207,7 +226,7 @@ inline void load_dude(struct dude* load_player, int count) {
 				load = false;
 				break;
 			case 3:
-				mainMenu();
+				mainMenu_N();
 				load = false;
 				break;
 			}
@@ -221,6 +240,7 @@ inline void create_dude() {
 	printf("\n\n\n");
 	struct dude create_player;
 	char name_player[] = "";
+	create_player.dude_stats.dude_healt = 100;
 	printf("Введите имя своего персонажа (Максимум 10 символов): ");
 	scanf_s("%s", create_player.dude_name[0], sizeof(create_player.dude_name[0]));
 	int pointsTotal = 10;
@@ -593,4 +613,149 @@ inline void ultra_elf(struct dude create_player) {
 	printf("%s\n", (char*)create_player.dude_name[1]);
 	printf("%s", create_player.dude_ultra_abilities[1]);
 	strat_game(&create_player);
+}
+
+inline void choise_attack(struct dude* player, struct enemy* enemy) {
+	printf("Битва начинается!\n");
+
+	// Инициализация генератора случайных чисел
+	srand(time(NULL));
+
+	// Цикл боя
+	while (player->dude_stats.dude_healt > 0 && enemy->enemy_health > 0) {
+		// Очередность атаки
+
+		// Показать доступные действия
+		printf("Выберите действие:\n");
+		printf("1) Атаковать\n");
+		printf("2) Воспользоваться зельем\n");
+		printf("3) Бежать с поля битвы\n");
+
+		int choice;
+		scanf("%d", &choice);
+
+		switch (choice) {
+		case 1:
+			// Игрок атакует
+			attackPLAYER(player, enemy);
+			break;
+		case 2:
+			// Игрок использует зелье
+			// Предположим, у игрока есть список зелий
+			// и он выбирает зелье для использования
+			// Potion selectedPotion = selectPotion(player.potions);
+			// usePotion(&player, &selectedPotion);
+			break;
+		case 3:
+			// Игрок бежит с поля битвы
+			printf("%s сбегает с поля битвы!\n", player->dude_name);
+			// ... Другие действия при бегстве ...
+			// Завершить цикл боя
+			break;
+		default:
+			printf("Некорректный выбор. Попробуйте снова.\n");
+			break;
+		}
+
+		if (player->dude_stats.dude_healt <= 0) {
+			playerDies(&player);
+			break;
+		}
+	}
+
+	printf("Битва окончена.\n");
+
+	return 0;
+}
+
+inline void attackPLAYER(struct dude* player, struct enemy* enemy) {
+	// Проверить дистанцию до противника
+	int distWeapon = player->dude_weapon.distance;
+	if (distWeapon >= enemy->enemy_distance) {
+		// Рассчитать урон атакующего с учетом агрессии противника
+		int damage = player->dude_weapon.damage;
+		// Применить коэффициент агрессии противника к урону
+		damage *= (1 + enemy->enemy_agressive);
+		// Применить случайный фактор (если нужно)
+		// damage = applyRandomFactor(damage);
+		int coeffEnemy = enemy->enemy_shield.shield_koef;
+
+		// Применить коэффициент защиты щита
+		damage /= coeffEnemy;
+
+		// Вычесть урон из здоровья противника
+		enemy->enemy_health -= damage;
+
+		// Проверить, если здоровье противника <= 0, то он побежден
+		if (enemy->enemy_health <= 0) {
+			printf("%s побеждает!\n", player->dude_name);
+			// Обновить статистику игрока
+			player->dude_stats.dude_win_enemys++;
+			enemy->enemy_health = 0;
+		}
+		else {
+			printf("%s атакует %s и наносит %d урона!\n", player->dude_name, enemy->enemy_name, damage);
+			// ... Другие возможные действия после атаки ...
+		}
+	}
+	else {
+		printf("%s слишком далеко, чтобы атаковать!\n", enemy->enemy_name);
+	}
+	attackENEMY(player, enemy);
+}
+
+inline void attackENEMY(struct dude* player, struct enemy* enemy) {
+	// Проверить дистанцию до противника
+	int distWeapon = enemy->enemy_weapon.distance;
+	if (distWeapon >= player->dude_distance) {
+		// Рассчитать урон атакующего с учетом агрессии противника
+		int damage = enemy->enemy_weapon.damage;
+		// Применить коэффициент агрессии противника к урону
+		damage *= (1 + enemy->enemy_agressive);
+		// Применить случайный фактор (если нужно)
+		// damage = applyRandomFactor(damage);
+		int coeffEnemy = player->dude_shield.shield_koef;
+
+		// Применить коэффициент защиты щита
+		damage /= coeffEnemy;
+
+		// Вычесть урон из здоровья противника
+		player->dude_stats.dude_healt -= damage;
+
+		// Проверить, если здоровье противника <= 0, то он побежден
+		if (player->dude_stats.dude_healt <= 0) {
+			printf("%s побеждает!\n", enemy->enemy_name);
+			player->dude_stats.dude_healt = 0;
+			playerDies(&player);
+		}
+		else {
+			printf("%s атакует %s и наносит %d урона!\n", enemy->enemy_name, player->dude_name, damage);
+			// ... Другие возможные действия после атаки ...
+		}
+	}
+	else {
+		printf("%s слишком далеко, чтобы атаковать!\n", player->dude_name);
+	}
+}
+
+inline void enhanceDefense(struct dude* player) {
+
+	if (player->dude_shield.shield_class[0] == "Широкий стальной щит")
+		enhanceDefense(player);
+
+
+
+
+	// Генерировать случайный коэффициент усиления щита (например, от 1.1 до 1.5)
+	float defenseEnhancement = 1.1 + (rand() / (float)RAND_MAX) * (1.5 - 1.1);
+	// Усилить защиту щита
+	int shieldUP = atoi(player->dude_shield.shield_class[3]);
+	shieldUP *= defenseEnhancement;
+	player->dude_shield.shield_class[3] = shieldUP;
+	printf("Защита щита %s усилилась!\n", player->dude_name);
+}
+
+inline void playerDies(struct dude* player) {
+	printf("%s погибает!\n", player->dude_name);
+	// ... Другие действия при смерти игрока ...
 }

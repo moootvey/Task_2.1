@@ -1,14 +1,26 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
 
+#include "headers.h"
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "core.cpp"
+
 
 void nameGame_screen();
 void mainMenu_screen();
 void playMenu_screen();
 void aboutGame_screen();
+//void sword_screen();
+//void bow_screen();
+//void axe_screen();
+//void stick_screen();
+//void hammer_screen();
+//void shield_screen();
+//void armor_screen();
+//void weapon_show(struct weapon weapon);
+//void armor_show(struct armor armor);
+//void shield_show(struct shield shield);
 
 inline void nameGame_screen() {
 	printf(" ___                 _        _    _                         _                                   _   \n");
@@ -71,6 +83,7 @@ inline void stick_screen() {
 	printf("\n   ||");
 	printf("\n   ()");
 }
+
 inline void hammer_screen() {
 	system("cls");
 	printf("  __        __");
@@ -151,25 +164,25 @@ inline void first_dialog() {
 
 inline void weapon_show(struct weapon weapon) {
 	printf("\n");
-	printf("\n%s", weapon.weapon_class[0]);
-	printf("\nНаносимый урон: %d", weapon.weapon_class[1]);
-	printf("\nМаксимальная прочность: %d", weapon.weapon_class[3]);
-	printf("\nДистанция атаки: %d", weapon.weapon_class[4]);
-	printf("\nСтоимость: %d", weapon.weapon_class[5]);
+	printf("\n%s", weapon.weapon_class);
+	printf("\nНаносимый урон: %d", weapon.damage);
+	printf("\nМаксимальная прочность: %d", weapon.MAX_durability);
+	printf("\nДистанция атаки: %d", weapon.distance);
+	printf("\nСтоимость: %d", weapon.cost);
 }
 
 inline void armor_show(struct armor armor) {
 	printf("\n");
-	printf("\n%s", armor.armor_class[0]);
-	printf("\nМаксимальная прочность: %d", armor.armor_class[2]);
-	printf("\nСтоимость: %d", armor.armor_class[3]);
+	printf("\n%s", armor.armor_class);
+	printf("\nМаксимальная прочность: %d", armor.MAX_durability);
+	printf("\nСтоимость: %d", armor.cost);
 }
 
 inline void shield_show(struct shield shield) {
 	printf("\n");
-	printf("\n%s", shield.shield_class[0]);
-	printf("\nМаксимальная прочность: %d", shield.shield_class[2]);
-	printf("\nКоэффицент зациты: %d", shield.shield_class[3]);
-	printf("\nСтоимость: %d", shield.shield_class[4]);
+	printf("\n%s", shield.shield_class);
+	printf("\nМаксимальная прочность: %d", shield.MAX_durability);
+	printf("\nКоэффицент зациты: %d", shield.shield_koef);
+	printf("\nСтоимость: %d", shield.cost);
 
 }

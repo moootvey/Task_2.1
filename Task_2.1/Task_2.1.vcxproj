@@ -132,6 +132,7 @@
     <ClCompile Include="armor_class.cpp" />
     <ClCompile Include="core.cpp" />
     <ClCompile Include="drop_class.cpp" />
+    <ClCompile Include="enemy_class.cpp" />
     <ClCompile Include="invetory.cpp" />
     <ClCompile Include="potion_class.cpp" />
     <ClCompile Include="print_console.cpp" />

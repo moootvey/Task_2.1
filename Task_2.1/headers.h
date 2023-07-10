@@ -6,18 +6,29 @@
 
 typedef struct weapon		//Оружие в наличии
 {
-	char* weapon_class[6];			//Навзвание оружия; Урон от него; Прочность оружия; Максимальная прочность; Рабочая дистанция оружия; Стоимость оружия
+	char* weapon_class;			//Навзвание оружия; Урон от него; Прочность оружия; Максимальная прочность; Рабочая дистанция оружия; Стоимость оружия
 	int damage;
+	int durability;
+	int MAX_durability;
+	int distance;
+	int cost;
 };
 
 typedef struct shield		//Щит
 {
-	char* shield_class[5];			//Название; Максимальная прочность; Прочность; Стоимость; Коэф. защиты
+	char* shield_class;			//Название; Максимальная прочность; Прочность; Стоимость; Коэф. защиты
+	int durability;
+	int MAX_durability;
+	int shield_koef;
+	int cost;
 };
 
 typedef struct armor		//Броня
 {
-	char* armor_class[4];			//Название брони; Текущее значение брони; Максимальная броня; Стоимость брони
+	char* armor_class;			//Название брони; Текущее значение брони; Максимальная броня; Стоимость брони
+	int durability;
+	int MAX_durability;
+	int cost;
 };
 
 typedef struct artifact		//Артифакт
@@ -30,16 +41,16 @@ typedef struct drop			//Предметы для крафта
 	char* drop_class[2];			//Наименование ресурса; Стоимость в магазине
 };
 
-typedef struct shop			//Магазин
-{
-	char* shop_weapon[6];			//Оружие у торговца
-	char* shop_armor[4];			//Броня
-	char* shop_drop[10];			//Дроп
-	char* shop_shield[5];			//Щит
-	char* shop_potion[6];			//Зелья
-	char* shop_artifact[8];			//Артифакты
-	char* shop_axe[3];				//топорик)
-};
+//typedef struct shop			//Магазин
+//{
+//	char* shop_weapon[6];			//Оружие у торговца
+//	char* shop_armor[4];			//Броня
+//	char* shop_drop[10];			//Дроп
+//	char* shop_shield[5];			//Щит
+//	char* shop_potion[6];			//Зелья
+//	char* shop_artifact[8];			//Артифакты
+//	char* shop_axe[3];				//топорик)
+//};
 
 typedef struct potion		//Зелья
 {
@@ -74,6 +85,15 @@ typedef struct dude			//Главвный герой
 	struct shield dude_shield;		//Щит персонажа
 	struct stats dude_stats;		//Распределенные очки сопосбностей
 	struct skills dude_skills;		//Статистика игрока
+	int dude_distance;
+};
+
+typedef struct shop
+{
+	struct weapon shop_weapon;		//Оружие персонажа
+	struct armor shop_armor;		//Броня персонажа
+	struct shield shop_shield;		//Щит персонажа
+	int money_bag;
 };
 
 //typedef struct dude_inventory
