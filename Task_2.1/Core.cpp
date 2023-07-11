@@ -37,7 +37,7 @@ void ultra_ork(struct dude create_player);
 void ultra_dvarf(struct dude create_player);
 void ultra_elf(struct dude create_player);
 void load_dude(struct dude* load_player, int count);
-void strat_game(struct dude* player);
+void start_game(struct dude* player);
 void playerDies(struct dude* player);
 void attackENEMY(struct dude* player, struct enemy* enemy);
 void choise_attack(struct dude* player, struct enemy* enemy);
@@ -97,7 +97,7 @@ inline void mainMenu_N() {
 	mainMenu_choose();
 }
 
-inline void strat_game(struct dude* player) {
+inline void start_game(struct dude* player) {
 	main_profile = player;
 	printf("\n\n\n%s\n", main_profile[0].dude_name[0]);
 	printf("%d %d %d %d\n", main_profile[0].dude_skills.dude_charisma, main_profile[0].dude_skills.dude_power, main_profile[0].dude_skills.dude_intelligence, main_profile[0].dude_skills.dude_close_combat);
@@ -170,8 +170,14 @@ inline void play_game() {
 				break;
 			case 1:
 				count = check_file1();
-				printf("\n%d", count);
+				//printf("\n%d", count);
 				load_player = load_players(filename);
+				if (load_player == NULL)
+				{
+					printf("В файле не найдено созданных игроков. Возврат в главное меню...");
+					Sleep(3000);
+					mainMenu_N();
+				}
 				load_dude(load_player, count);
 				play = false;
 				break;
@@ -196,9 +202,9 @@ inline void load_dude(struct dude* load_player, int count) {
 		printf("\n\n\n");
 		printf("Выберете персонажа: \n");
 		for (int i = 0; i < count; i++) {
-			printf("%s Структура %d: id = %s, value = %d\n", (selected == i) ? "> " : "  ", i + 1, load_player[i].dude_name, load_player[i].dude_skills.dude_charisma);
+			printf("%s Сохраненный профиль %d: Имя = %s\n", (selected == i) ? "> " : "  ", i + 1, load_player[i].dude_name);
 		}
-		printf("%s Выйти в главное меню", (selected == 4) ? "> " : "  ");
+		printf("\n Введите q для выхода в главное меню...");
 		// Получение нажатой клавиши
 		keyPressed = _getch();
 
@@ -206,27 +212,27 @@ inline void load_dude(struct dude* load_player, int count) {
 		if (keyPressed == KEY_UP && selected > 0) {
 			selected--;
 		}
-		else if (keyPressed == KEY_DOWN && selected < count-1) {
+		else if (keyPressed == KEY_DOWN && selected < count - 1) {
 			selected++;
+		}
+		else if (keyPressed == 'q') {
+			mainMenu_N();
+			load = false;
 		}
 		else if (keyPressed == KEY_ENTER) {
 			// Выполнение действия для выбранного пункта
 			switch (selected) {
 			case 0:
-				strat_game(&load_player[0]);
+				start_game(&load_player[0]);
 				//start_game(load_player);
 				load = false;
 				break;
 			case 1:
-				//start_game(load_player);
+				start_game(&load_player[1]);
 				load = false;
 				break;
 			case 2:
-				//start_game(load_player);
-				load = false;
-				break;
-			case 3:
-				mainMenu_N();
+				start_game(&load_player[2]);
 				load = false;
 				break;
 			}
@@ -413,8 +419,13 @@ inline void ultra_man(struct dude create_player) {
 	printf("%s\n", (char*)create_player.dude_name[1]);
 	printf("%s", create_player.dude_ultra_abilities[1]);
 	char filename[] = "players.dat";
-	save_player(filename, &create_player);
-	strat_game(&create_player);
+	int check = save_player(filename, &create_player);
+	if (check == 1)
+	{
+		start_game(&create_player);
+	}
+	else
+		mainMenu_N();
 }
 
 inline void ultra_ork(struct dude create_player) {
@@ -480,7 +491,7 @@ inline void ultra_ork(struct dude create_player) {
 	printf("%d %d %d %d\n", create_player.dude_skills.dude_charisma, create_player.dude_skills.dude_power, create_player.dude_skills.dude_intelligence, create_player.dude_skills.dude_close_combat);
 	printf("%s\n", (char*)create_player.dude_name[1]);
 	printf("%s", create_player.dude_ultra_abilities[1]);
-	strat_game(&create_player);
+	start_game(&create_player);
 }
 
 inline void ultra_dvarf(struct dude create_player) {
@@ -546,7 +557,7 @@ inline void ultra_dvarf(struct dude create_player) {
 	printf("%d %d %d %d\n", create_player.dude_skills.dude_charisma, create_player.dude_skills.dude_power, create_player.dude_skills.dude_intelligence, create_player.dude_skills.dude_close_combat);
 	printf("%s\n", (char*)create_player.dude_name[1]);
 	printf("%s", create_player.dude_ultra_abilities[1]);
-	strat_game(&create_player);
+	start_game(&create_player);
 }
 
 inline void ultra_elf(struct dude create_player) {
@@ -612,7 +623,7 @@ inline void ultra_elf(struct dude create_player) {
 	printf("%d %d %d %d\n", create_player.dude_skills.dude_charisma, create_player.dude_skills.dude_power, create_player.dude_skills.dude_intelligence, create_player.dude_skills.dude_close_combat);
 	printf("%s\n", (char*)create_player.dude_name[1]);
 	printf("%s", create_player.dude_ultra_abilities[1]);
-	strat_game(&create_player);
+	start_game(&create_player);
 }
 
 inline void choise_attack(struct dude* player, struct enemy* enemy) {
@@ -701,7 +712,10 @@ inline void attackPLAYER(struct dude* player, struct enemy* enemy) {
 	else {
 		printf("%s слишком далеко, чтобы атаковать!\n", enemy->enemy_name);
 	}
-	attackENEMY(player, enemy);
+	if (enemy->enemy_health > 0)
+	{
+		attackENEMY(player, enemy);
+	}
 }
 
 inline void attackENEMY(struct dude* player, struct enemy* enemy) {

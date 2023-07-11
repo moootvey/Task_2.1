@@ -66,6 +66,7 @@ typedef struct stats		//Статистика игрока
 	int dude_money;					//Количество денег
 	int dude_healt;					//Здоровье на данный момент
 	int dude_MAX_health;			//Максимальное здоровье
+	int dude_days;
 };
 
 typedef struct skills		//Распределенные очки сопосбностей
