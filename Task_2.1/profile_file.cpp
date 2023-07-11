@@ -53,19 +53,6 @@ inline int check_file1() {
     return count;
 }
 
-inline void save_player_1(char* filename, struct dude* player) {
-    FILE* file = fopen(filename, "ab");
-
-    if (file != NULL) {
-        fwrite(player, sizeof(struct dude), 1, file);
-        fclose(file);
-        printf("Данные успешно сохранены в файл: %s\n", filename);
-    }
-    else {
-        printf("Не удалось открыть файл: %s\n", filename);
-    }
-}
-
 inline struct dude* load_players(const char* filename) {
     int count;
     FILE* file = fopen(filename, "rb");

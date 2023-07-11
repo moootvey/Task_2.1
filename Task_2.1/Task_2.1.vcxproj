@@ -133,6 +133,7 @@
     <ClCompile Include="core.cpp" />
     <ClCompile Include="drop_class.cpp" />
     <ClCompile Include="enemy_class.cpp" />
+    <ClCompile Include="file_reader.cpp" />
     <ClCompile Include="invetory.cpp" />
     <ClCompile Include="potion_class.cpp" />
     <ClCompile Include="print_console.cpp" />
@@ -140,6 +141,7 @@
     <ClCompile Include="profile_file.cpp" />
     <ClCompile Include="shield_class.cpp" />
     <ClCompile Include="shop.cpp" />
+    <ClCompile Include="story.cpp" />
     <ClCompile Include="weapon_class.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -186,3 +186,11 @@ inline void shield_show(struct shield shield) {
 	printf("\nСтоимость: %d", shield.cost);
 
 }
+
+inline void paper_end_screen() {
+	printf("\n|--__---\\--\\\\									  _______________??//");
+	printf("\n	     \\-\\----____-					 ___________----_/");
+	printf("\n			--__--___-				/");
+	printf("\n				  \\__-__+______\\	       /");
+	printf("\n						\\___=-+_______/");
+}
